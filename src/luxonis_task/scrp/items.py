@@ -1,9 +1,11 @@
-import dataclasses
+import dataclasses as dc
+import datetime as dt
 
 
-@dataclasses.dataclass(slots=True)
+@dc.dataclass(slots=True)
 class Advert:
     images: [str]
+    inserted: dt.datetime | None
     price: int
     title: str
     url: str

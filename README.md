@@ -6,3 +6,12 @@ Use scrapy framework to scrape the first 500 items (title, image url) from sreal
 
 * scraped prices are lower
 * website is not rendered (page rendering alternatives Splash, Playwright)
+
+## How to run
+
+* add `.env` file with following variables:
+```
+POSTGRES_PASSWORD=
+```
+
+* run `docker-compose up`
