@@ -1,7 +1,11 @@
 import logging
 
-from . import base
+import uvicorn
+
+from .api import base as abase
+from .scrp import base as sbase
 
 logging.basicConfig(level=logging.INFO)
 
-base.populate_db()
+sbase.populate_db()
+uvicorn.run(abase.create_app(), reload=True)

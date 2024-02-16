@@ -3,7 +3,7 @@ from collections import abc
 
 from sqlalchemy import orm
 
-from . import models
+from . import entities as et
 
 
 class Advert:
@@ -12,17 +12,23 @@ class Advert:
     ) -> None:
         self._session_factory = session_factory
 
-    def add(self, advert: models.Advert) -> int:
+    def add(self, advert: et.Advert) -> int:
         with self._session_factory() as session:
             session.add(advert)
             session.commit()
             session.refresh(advert)
             return advert.id
 
-    def get_all(self) -> abc.Iterator[models.Advert]: ...
+    def delete_all(self) -> int:
+        with self._session_factory() as session:
+            return session.query(et.Advert).delete()
 
-    def get_last(self) -> models.Advert:
+    def get_all(self) -> abc.Generator[et.Advert]:
+        with self._session_factory() as session:
+            return session.query(et.Advert).all()
+
+    def get_last(self) -> et.Advert:
         with self._session_factory() as session:
             return (
-                session.query(models.Advert).order_by(models.Advert.id.desc()).first()
+                session.query(et.Advert).order_by(et.Advert.id.desc()).first()
             )

@@ -3,10 +3,10 @@ import logging
 from collections import abc
 
 import sqlalchemy as sal
-from sqlalchemy import exc, orm
+from sqlalchemy import exc as sexc, orm
 from sqlalchemy.ext import declarative as dec
 
-from . import models
+from . import entities as et
 
 log = logging.getLogger(__name__)
 Base = dec.declarative_base()
@@ -23,17 +23,17 @@ class Database:
         )
 
     def create_database(self) -> None:
-        models.Base.metadata.create_all(self._engine)
+        et.Base.metadata.create_all(self._engine)
 
     def drop_database(self) -> None:
-        models.Base.metadata.drop_all(self._engine)
+        et.Base.metadata.drop_all(self._engine)
 
     @ctx.contextmanager
     def session(self) -> abc.Iterator[orm.Session]:
         session = self._session_factory()
         try:
             yield session
-        except exc.SQLAlchemyError:
+        except sexc.SQLAlchemyError:
             log.exception("session.rollback")
             session.rollback()
             raise

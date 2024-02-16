@@ -1,14 +1,15 @@
-from ..scrp import items
-from . import models, repositories as repo
+from collections import abc
+
+from . import entities as et, models as ml, repositories as repo
 
 
 class Advert:
     def __init__(self, advert_repo: repo.Advert) -> None:
         self._repo = advert_repo
 
-    def add(self, advert: items.Advert) -> None:
+    def add(self, advert: ml.Advert) -> None:
         self._repo.add(
-            models.Advert(
+            et.Advert(
                 images=";".join(advert.images),
                 price=advert.price,
                 title=advert.title,
@@ -16,16 +17,27 @@ class Advert:
             )
         )
 
-    def get_all(self): ...
+    def delete_all(self) -> int:
+        return self._repo.delete_all()
 
-    def get_last(self) -> items.Advert | None:
+    def get_all(self) -> abc.Generator[ml.Advert]:
+        for advert in self._repo.get_all():
+            yield ml.Advert(
+                advert.images.split(";"),
+                advert.price,
+                advert.title,
+                advert.url,
+                advert.inserted,
+            )
+
+    def get_last(self) -> ml.Advert | None:
         advert = self._repo.get_last()
         if not advert:
             return None
-        return items.Advert(
+        return ml.Advert(
             advert.images.split(";"),
-            advert.inserted,
             advert.price,
             advert.title,
             advert.url,
+            advert.inserted,
         )

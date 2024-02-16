@@ -8,4 +8,6 @@ class BaseContainer(con.DeclarativeContainer):
     db = prov.Singleton(db.Database, db_url=config.db.url)
     advert_repo = prov.Factory(repo.Advert, session_factory=db.provided.session)
     advert_srv = prov.Factory(svc.Advert, advert_repo=advert_repo)
-    wiring_config = con.WiringConfiguration(modules=["..scrp.base", "..scrp.pipelines"])
+    wiring_config = con.WiringConfiguration(
+        modules=["..api.endpoints", "..scrp.base", "..scrp.pipelines"]
+    )

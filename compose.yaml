@@ -1,18 +1,29 @@
 services:
   api:
-    build: .
+    image: luxonis-task:compose
+    command: ["uvicorn", "--host", "0.0.0.0", "--factory", "src.luxonis_task.api:create_app"]
     ports:
-    - "8000:8080"
+    - "127.0.0.1:8080:8000"
     volumes:
     - ./src:/app/scr
     - ./tests:/app/tests
     environment:
     - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     depends_on:
-      db:
-        condition: service_started
-        restart: true
+    - db
+    - scraper
   db:
-    image: "postgres:alpine"
+    image: postgres:alpine
     environment:
     - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+  scraper:
+    image: luxonis-task:compose
+    command: ["python", "-m", "src.luxonis_task.scrp"]
+    build: .
+    volumes:
+    - ./src:/app/scr
+    - ./tests:/app/tests
+    environment:
+    - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    depends_on:
+    - db

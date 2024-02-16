@@ -8,7 +8,8 @@ from typing import *
 import scrapy
 import scrapy.http as s_http
 
-from .. import items, pipelines
+from ...app import models as ml
+from .. import pipelines
 
 log = logging.getLogger(__name__)
 
@@ -27,10 +28,10 @@ class SrealitySpider(scrapy.Spider):
 
     def parse(
         self, response: s_http.Response, **kwargs: Any
-    ) -> abc.Generator[items.Advert]:
+    ) -> abc.Generator[ml.Advert]:
         data = json.loads(response.body)
         for estate in data["_embedded"]["estates"]:
-            yield items.Advert(
+            yield ml.Advert(
                 images=[
                     SrealitySpider._get_img_url(image["href"])
                     for image in estate["_links"]["images"]
@@ -44,11 +45,14 @@ class SrealitySpider(scrapy.Spider):
                     estate["name"],
                 ),
             )
-        if self.pages_crawled < 1:
+        if self.pages_crawled < 8:
             self.pages_crawled += 1
+            per_page = 60
+            if self.pages_crawled == 8:
+                per_page = 20
             yield response.follow(
                 url=f"/api/cs/v2/estates?category_main_cb=1&category_type_cb=1"
-                f"&page={self.pages_crawled + 1}&per_page=60"
+                f"&page={self.pages_crawled + 1}&per_page={per_page}"
                 f"&tms={time.time_ns() // 1_000_000}",
                 callback=self.parse,
             )
