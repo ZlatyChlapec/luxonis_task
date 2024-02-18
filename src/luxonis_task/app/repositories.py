@@ -21,7 +21,9 @@ class Advert:
 
     def delete_all(self) -> int:
         with self._session_factory() as session:
-            return session.query(et.Advert).delete()
+            deleted = session.query(et.Advert).delete()
+            session.commit()
+            return deleted
 
     def get_all(self) -> abc.Generator[et.Advert]:
         with self._session_factory() as session:
