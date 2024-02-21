@@ -19,7 +19,7 @@ services:
   scraper:
     image: luxonis-task:compose
     command: ["python", "-m", "src.luxonis_task.scrp"]
-    build: .
+    build: ./backend
     volumes:
     - ./src:/app/scr
     - ./tests:/app/tests
