@@ -6,6 +6,7 @@ Use scrapy framework to scrape the first 500 items (title, image url) from sreal
 
 * scraped prices are lower
 * website is not rendered (page rendering alternatives Splash, Playwright)
+* you can check proper FE on http://127.0.0.1:5173
 
 ## How to run
 

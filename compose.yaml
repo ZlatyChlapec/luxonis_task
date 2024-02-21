@@ -1,5 +1,5 @@
 services:
-  api:
+  backend:
     image: luxonis-task:compose
     command: ["uvicorn", "--host", "0.0.0.0", "--factory", "src.luxonis_task.api:create_app"]
     ports:
@@ -27,3 +27,8 @@ services:
     - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     depends_on:
     - db
+  frontend:
+    image: luxonis-task-fe:compose
+    build: ./frontend
+    ports:
+    - "127.0.0.1:5173:80"

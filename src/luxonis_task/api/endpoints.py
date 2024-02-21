@@ -3,7 +3,7 @@ from dependency_injector import wiring as wr
 from fastapi import responses as far
 from sqlalchemy import exc as sexc
 
-from ..app import containers as cnt, services as svc
+from ..app import containers as cnt, models as ml, services as svc
 
 router = fa.APIRouter()
 
@@ -66,3 +66,14 @@ def get_adverts(
         </body>
     </html>
     """
+
+
+@router.get("/api/adverts/v1", response_model=None)
+@wr.inject
+def api_get_adverts(
+        service: svc.Advert = fa.Depends(wr.Provide[cnt.BaseContainer.advert_srv]),
+) -> list[ml.Advert]:
+    try:
+        return list(service.get_all())
+    except sexc.ProgrammingError:
+        raise fa.HTTPException(status_code=503, detail="Missing data")
